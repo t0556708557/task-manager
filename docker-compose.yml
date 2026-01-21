@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task-manager-app
+    restart: unless-stopped
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/taskdb
+      - FLASK_ENV=production
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mongo-db
+    restart: unless-stopped
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+    #   - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    networks:
+      - app_network
+    volumes:
+      - db-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Test service - runs independently
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: task_tests
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/taskdb-test
+      - FLASK_ENV=testing
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./coverage:/app/htmlcov
+    # Don't run by default - use: docker-compose run test
+    profiles:
+      - test
+
+networks:
+  app_network:
+
+volumes:
+  db-data:
