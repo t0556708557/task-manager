@@ -45,10 +45,13 @@ jobs:
 
       - name: Build and tag Docker image
         run: |
-          docker build -t task-manager:${{ env.IMAGE_TAG }} .
-          docker tag task-manager :${{ env.IMAGE_TAG }} task-manager:latest
+          docker compose build
 
-      - name: Save Docker image artifact
+      - name: Save Docker image to tar
+        run: |
+          docker save task-manager-app | gzip > task-manager-image.tar.gz
+
+      - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
