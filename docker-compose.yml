@@ -50,6 +50,7 @@ services:
     volumes:
       - ./app:/app/app
       - ./tests:/app/tests
+      - ./coverage:/app/coverage
     # Don't run by default - use: docker-compose run test
     profiles:
       - test
@@ -59,4 +60,5 @@ networks:
 
 volumes:
   db-data:
+
 
