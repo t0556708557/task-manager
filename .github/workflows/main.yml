@@ -28,7 +28,12 @@ jobs:
           done
 
       - name: Run unit tests
-        run: docker compose run --rm test
+        run: docker compose run test
+
+      - name: Copy coverage from container
+        run: |
+          CONTAINER_ID=$(docker ps -aqf "name=task_tests")
+          docker cp $CONTAINER_ID:/app/htmlcov ./coverage
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
