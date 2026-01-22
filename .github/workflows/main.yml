@@ -28,18 +28,19 @@ jobs:
           done
 
       - name: Run unit tests
-        run: docker compose up --abort-on-container-exit test
+        run: docker compose run --rm test
 
-      - name: Copy coverage from container
+      - name: Fix coverage permissions
         run: |
-          CONTAINER_ID=$(docker compose ps -q test)
-          docker cp $CONTAINER_ID:/app/htmlcov ./coverage
+          mkdir -p coverage
+          chmod -R 755 coverage
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage/
+          retention-days: 30
 
       - name: Docker cleanup
         if: always()
