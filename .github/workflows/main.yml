@@ -32,7 +32,7 @@ jobs:
 
       - name: Copy coverage from container
         run: |
-          CONTAINER_ID=$(docker ps -aqf "name=task_tests")
+          CONTAINER_ID=$(docker compose ps -q test)
           docker cp $CONTAINER_ID:/app/htmlcov ./coverage
 
       - name: Upload coverage artifact
