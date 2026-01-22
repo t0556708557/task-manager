@@ -30,19 +30,6 @@ jobs:
       - name: Run unit tests
         run: docker compose run --rm test
 
-      - name: Fix coverage permissions
-        run: |
-          mkdir -p coverage
-          sudo chown -R $USER:$USER coverage
-          sudo chmod -R 755 coverage
-
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 30
-
       - name: Docker cleanup
         if: always()
         run: docker compose down -v
