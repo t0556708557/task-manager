@@ -21,4 +21,4 @@ ENV PYTHONPATH=/app
 ENV FLASK_ENV=testing
 
 # Default command runs tests with coverage
-CMD ["pytest", "tests/", "-v", "--cov=app", "--cov-report=term-missing", "--cov-report=html"]
+CMD ["pytest", "tests/", "-v", "--cov=app", "--cov-report=term-missing", "--cov-report=html:coverage"]
