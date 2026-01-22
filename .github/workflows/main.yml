@@ -28,7 +28,7 @@ jobs:
           done
 
       - name: Run unit tests
-        run: docker compose run test
+        run: docker compose up --abort-on-container-exit test
 
       - name: Copy coverage from container
         run: |
