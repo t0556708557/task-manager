@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build task manager app
-        run: docker build -t task-manager:latest
+        run: docker build -t task-manager:latest .
 
       - name: Save Docker image
         run: docker save task-manager:latest | gzip > task-manager-image.tar.gz
