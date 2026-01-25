@@ -51,30 +51,47 @@ jobs:
         run: |
           docker compose build
 
-      - name: Save Docker image to tar
-        run: |
-          docker save task-manager-app | gzip > task-manager-image.tar.gz
+      - name: Save Docker image as artifact
+        run: docker save task-manager-app | gzip > task-manager-image.tar.gz
 
-      - name: Upload Docker image artifact
+      - name: Upload docker image
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
           path: task-manager-image.tar.gz
-          retention-days: 1
 
       - name: Start E2E environment
         run: docker compose up -d
 
       - name: Run E2E tests
         run: |
+          echo "Waiting for API to be ready..."
+    
+          max_attempts=40
+          attempt=1
+          api_ready=false
+    
           for i in {1..40}; do
-            echo "Waiting for API..."
+            echo "Attempt $i/$max_attempts - Testing API..."
+      
+            # Test if API responds with 200 OK
             if curl -sf http://localhost:5000/api/tasks; then
-              echo "API is up!"
+              echo "✅ API is up and responding!"
+              api_ready=true
               break
             fi
+      
+            echo "API not ready yet, waiting 5 seconds..."
             sleep 5
           done
+    
+          # Fail if API never became ready
+          if [ "$api_ready" = false ]; then
+            echo "❌ ERROR: API failed to start after $max_attempts attempts"
+            echo "Showing container logs:"
+            docker compose logs web
+            exit 1
+          fi
       
       - name: Stop E2E environment
         if: always()
