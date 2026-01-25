@@ -66,7 +66,15 @@ jobs:
         run: docker compose up -d
 
       - name: Run E2E tests
-        run: curl -sf http://localhost:5000/api/tasks
+        run: |
+          for i in {1..20}; do
+            echo "Waiting for API..."
+            if curl -sf http://localhost:5000/api/tasks; then
+              echo "API is up!"
+              break
+            fi
+            sleep 3
+          done
       
       - name: Stop E2E environment
         if: always()
