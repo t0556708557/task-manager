@@ -51,14 +51,17 @@ jobs:
         run: |
           docker compose build
 
-      - name: Save Docker image
-        run: docker save task-manager-app:latest -o task-manager-app.tar
-
-      - name: Upload image as artifact
-        uses: actions/upload-artifact@v4
+      - name: Save & Upload Docker image
+        run: |
+          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -E "task-manager|web" | head -1)
+          docker tag $IMAGE task-manager:latest
+          docker save task-manager:latest | gzip > task-manager-image.tar.gz
+          ls -lh task-manager-image.tar.gz
+      - uses: actions/upload-artifact@v4
         with:
-          name: task-manager-image
-          path: ./task-manager-app.tar
+          name: docker-image
+          path: task-manager-image.tar.gz
+          retention-days: 1
 
       - name: Start E2E environment
         run: docker compose up -d
@@ -91,14 +94,25 @@ jobs:
 
     steps:
 
-      - name: Download built image
+      - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
-          name: task-manager-image
-          path: .
+          name: docker-image
 
-      - name: Load Docker image
-        run: docker load -i task-manager-app.tar
+      - name: Extract and load Docker image
+        run: |
+          
+          if [ -f "task-manager-image.tar.gz" ]; then
+            gunzip task-manager-image.tar.gz
+            docker load -i task-manager-image.tar
+          else
+            echo "❌ Error: Image file not found!"
+            ls -la
+            exit 1
+          fi
+          
+          echo "✅ Image loaded successfully"
+          docker images | grep task-manager
 
       - name: Configure AWS Credentials (OIDC) - Secret      
         uses: aws-actions/configure-aws-credentials@v4
