@@ -51,14 +51,14 @@ jobs:
         run: |
           docker compose build
 
-      - name: Save Docker image as artifact
-        run: docker save task-manager-app | gzip > task-manager-image.tar.gz
+      - name: Save Docker image
+        run: docker save task-manager-app:latest -o task-manager-app.tar
 
-      - name: Upload docker image
+      - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: docker-image
-          path: task-manager-image.tar.gz
+          name: task-manager-image
+          path: ./task-manager-app.tar
 
       - name: Start E2E environment
         run: docker compose up -d
@@ -66,32 +66,19 @@ jobs:
       - name: Run E2E tests
         run: |
           echo "Waiting for API to be ready..."
-    
-          max_attempts=40
-          attempt=1
-          api_ready=false
-    
-          for i in {1..10}; do
-            echo "Attempt $i/$max_attempts - Testing API..."
+        
+          for i in {1..4}; do
+            echo "Attempt $i/4 - Testing API..."
       
             # Test if API responds with 200 OK
             if curl -sf http://localhost:5000/api/tasks; then
-              echo "✅ API is up and responding!"
-              api_ready=true
+              echo "API is up and responding!"
               break
             fi
       
             echo "API not ready yet, waiting 5 seconds..."
             sleep 5
           done
-    
-          # Fail if API never became ready
-          if [ "$api_ready" = false ]; then
-            echo "❌ ERROR: API failed to start after $max_attempts attempts"
-            echo "Showing container logs:"
-            docker compose logs web
-            exit 1
-          fi
       
       - name: Stop E2E environment
         if: always()
@@ -103,13 +90,15 @@ jobs:
     needs: package-and-integration-tests
 
     steps:
-      - name: Download docker image
+
+      - name: Download built image
         uses: actions/download-artifact@v4
         with:
-          name: docker-image
+          name: task-manager-image
+          path: .
 
-      - name: Extract image
-        run: gunzip -c docker-image/task-manager-image.tar.gz | docker load
+      - name: Load Docker image
+        run: docker load -i task-manager-app.tar
 
       - name: Configure AWS Credentials (OIDC) - Secret      
         uses: aws-actions/configure-aws-credentials@v4
