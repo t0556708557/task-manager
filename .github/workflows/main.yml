@@ -47,16 +47,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build and tag Docker image
-        run: |
-          docker compose build
+      - name: Build task manager app
+        run: docker build -t task-manager:latest
 
       - name: Save Docker image
-        run: |
-          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -E "task-manager|web" | head -1)
-          docker tag $IMAGE task-manager:latest
-          docker save task-manager:latest | gzip > task-manager-image.tar.gz
-          ls -lh task-manager-image.tar.gz
+        run: docker save task-manager:latest | gzip > task-manager-image.tar.gz
 
       - name: Upload Docker image
         uses: actions/upload-artifact@v4
@@ -65,6 +60,9 @@ jobs:
           path: task-manager-image.tar.gz
           retention-days: 1
 
+      - name: Build application + database - mongo
+        run: docker compose build
+        
       - name: Start E2E environment
         run: docker compose up -d
 
