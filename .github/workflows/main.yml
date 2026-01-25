@@ -71,7 +71,7 @@ jobs:
           attempt=1
           api_ready=false
     
-          for i in {1..40}; do
+          for i in {1..10}; do
             echo "Attempt $i/$max_attempts - Testing API..."
       
             # Test if API responds with 200 OK
