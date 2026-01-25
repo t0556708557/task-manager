@@ -67,7 +67,7 @@ jobs:
 
       - name: Run E2E tests
         run: |
-          for i in {1..30}; do
+          for i in {1..40}; do
             echo "Waiting for API..."
             if curl -sf http://localhost:5000/api/tasks; then
               echo "API is up!"
@@ -92,7 +92,7 @@ jobs:
           name: docker-image
 
       - name: Extract image
-        run: gunzip -c task-manager-image.tar.gz | docker load
+        run: gunzip -c docker-image/task-manager-image.tar.gz | docker load
 
       - name: Configure AWS Credentials (OIDC) - Secret      
         uses: aws-actions/configure-aws-credentials@v4
