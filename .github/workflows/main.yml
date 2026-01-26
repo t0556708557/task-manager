@@ -23,6 +23,10 @@ jobs:
 
       - name: Start MongoDB
         run: docker compose up -d mongodb
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Wait for MongoDB
         run: |
@@ -30,13 +34,24 @@ jobs:
             echo "Waiting for MongoDB..."
             sleep 3
           done
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Run unit tests
         run: docker compose run --rm test
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Docker cleanup
         if: always()
         run: docker compose down -v
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         
   package-and-integration-tests:
     name: Package & Integration Tests
@@ -49,6 +64,10 @@ jobs:
 
       - name: Build task manager app
         run: docker build -t task-manager:latest .
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Save Docker image
         run: docker save task-manager:latest | gzip > task-manager-image.tar.gz
@@ -62,9 +81,17 @@ jobs:
 
       - name: Build application + database - mongo
         run: docker compose build
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
         
       - name: Start E2E environment
         run: docker compose up -d
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Run E2E tests
         run: |
@@ -82,10 +109,18 @@ jobs:
             echo "API not ready yet, waiting 5 seconds..."
             sleep 5
           done
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
       
       - name: Stop E2E environment
         if: always()
         run: docker compose down -v
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
   publish:
     name: Publish Verified Image to ECR
