@@ -8,7 +8,7 @@ services:
     container_name: task-manager-app
     restart: unless-stopped
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/taskdb
+      - MONGO_URI=mongodb://${DB_USER}:${DB_PASSWORD}@mongodb:27017/taskdb?authSource=admin
       - FLASK_ENV=production
     ports:
       - "5000:5000"
@@ -21,9 +21,9 @@ services:
     image: mongo:7.0
     container_name: mongo-db
     restart: unless-stopped
-    # environment:
-    #   - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
-    #   - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
     networks:
       - app_network
     volumes:
@@ -60,5 +60,6 @@ networks:
 
 volumes:
   db-data:
+
 
 
