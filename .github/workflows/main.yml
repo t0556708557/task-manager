@@ -157,4 +157,25 @@ jobs:
       - name: Verify pushed image
         run: docker pull ${{ secrets.ECR_REPOSITORY }}:latest
 
+  deploy-to-eks:
+    name: Deploy to EKS
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name tamar-cluster --region ap-south-1
+
+      - name: Deploy latest image to EKS
+        run: |
+          kubectl set image deployment/task-manager \
+            task-manager-app=${{ secrets.ECR_REPOSITORY }}:latest \
+            -n task-manager
+          kubectl rollout status deployment/task-manager -n task-manager
       
