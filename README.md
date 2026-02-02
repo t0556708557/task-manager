@@ -13,12 +13,13 @@ A RESTful API for managing tasks built with Flask and MongoDB. This application 
 - 🐳 Fully dockerized
 - 🧪 Comprehensive unit tests
 
+## 🐳 Start with Docker (Recommended)
+
 **Prerequisites:**
 - Docker and Docker Compose
 - Python 3.11+ (for local development)
 - MongoDB (for local development)
 
-**Start with Docker (Recommended):**
 ```bash
 # Clone the repository
 git clone https://github.com/t0556708557/task-manager.git
@@ -37,9 +38,7 @@ docker-compose up --build
 docker compose --profile test run --rm test
 ```
 
-## 📋 Installation
-
-### Local Development Setup
+## 📋 Local Development Setup
 
 1. **Create virtual environment:**
 ```bash
@@ -72,14 +71,7 @@ echo "FLASK_ENV=development" >> .env
 python run.py
 ```
 
-## � API Documentation
-
-### Base URL
-```
-http://localhost:5000/api
-```
-
-### Endpoints
+## 📋 API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -91,26 +83,14 @@ http://localhost:5000/api
 | DELETE | /api/tasks/completed | Delete all completed |
 | GET | /api/tasks/search?q={query} | Search tasks |
 
-## 🧪 Testing
 
-### Unit Tests
+## 🧪 Unit Tests
 ```bash
 # Run unit tests
 docker compose --profile test run --rm test
 
 # Run with coverage
 docker compose --profile test run --rm test pytest tests/ -v --cov=app
-```
-
-### Manual Testing
-```bash
-# Test API endpoints
-curl http://localhost:5000/api/tasks
-
-# Create a task
-curl -X POST http://localhost:5000/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Test Task", "description": "Test description"}'
 ```
 
 ## 🚢 CI/CD Pipeline
