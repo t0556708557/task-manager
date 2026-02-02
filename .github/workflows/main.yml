@@ -59,19 +59,19 @@ jobs:
       - name: Run E2E tests
         run: |
           echo "Waiting for API to be ready..."
-        
+          
           for i in {1..4}; do
             echo "Attempt $i/4 - Testing API..."
-      
+            
             # Test if API responds with 200 OK
             if curl -sf http://localhost:5000/api/tasks; then
               echo "API is up and responding!"
               break
             fi
-      
+            
             echo "API not ready yet, waiting 5 seconds..."
             sleep 5
-          done}}
+          done
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
