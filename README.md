@@ -2,27 +2,6 @@
 
 A RESTful API for managing tasks built with Flask and MongoDB. This application provides a complete task management system with CRUD operations, search functionality, and Docker containerization.
 
-## 📁 Project Structure
-
-```
-task-manager/
-├── app/
-│   ├── __init__.py          # Flask app factory
-│   ├── config.py            # Configuration
-│   ├── models.py            # Database models
-│   ├── routes.py            # API endpoints
-│   └── static/
-│       └── index.html       # Frontend UI
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py          # Test configuration
-│   └── test_api.py          # API tests
-├── docker-compose.yml       # Docker compose config
-├── Dockerfile               # Docker image config
-├── requirements.txt         # Python dependencies
-└── run.py                   # Application entry point
-```
-
 ## 🚀 Features
 
 - ✅ Create, read, update, delete tasks
@@ -34,7 +13,73 @@ task-manager/
 - 🐳 Fully dockerized
 - 🧪 Comprehensive unit tests
 
-## 📋 API Endpoints
+**Prerequisites:**
+- Docker and Docker Compose
+- Python 3.11+ (for local development)
+- MongoDB (for local development)
+
+**Start with Docker (Recommended):**
+```bash
+# Clone the repository
+git clone https://github.com/t0556708557/task-manager.git
+cd task-manager
+
+# Build and run all services
+docker-compose up --build
+```
+
+**Access:**
+- Frontend: http://localhost:5000
+- API: http://localhost:5000/api/tasks
+
+**Run tests:**
+```bash
+docker compose --profile test run --rm test
+```
+
+## 📋 Installation
+
+### Local Development Setup
+
+1. **Create virtual environment:**
+```bash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
+
+2. **Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+3. **Start MongoDB:**
+```bash
+# Using Docker (recommended)
+docker run -d -p 27017:27017 --name mongodb mongo:7.0
+
+# Or using local MongoDB
+mongod --dbpath /path/to/data
+```
+
+4. **Set environment variables (optional):**
+```bash
+echo "MONGO_URI=mongodb://localhost:27017/taskdb" > .env
+echo "FLASK_ENV=development" >> .env
+```
+
+5. **Run the application:**
+```bash
+python run.py
+```
+
+## � API Documentation
+
+### Base URL
+```
+http://localhost:5000/api
+```
+
+### Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -45,64 +90,6 @@ task-manager/
 | DELETE | /api/tasks/{id} | Delete task |
 | DELETE | /api/tasks/completed | Delete all completed |
 | GET | /api/tasks/search?q={query} | Search tasks |
-
-## 🐳 Quick Start
-
-**Start with Docker:**
-```bash
-docker-compose up --build
-```
-
-**Access:**
-- Frontend: http://localhost:5000
-- API: http://localhost:5000/api/tasks
-
-**Run tests:**
-```bash
-docker-compose run web pytest tests/ -v
-```
-
-## 💻 Local Development
-
-1. Create virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Start MongoDB:
-```bash
-mongod --dbpath /path/to/data
-```
-
-4. Run application:
-```bash
-python run.py
-```
-
-## 📝 API Examples
-
-**Create task:**
-```bash
-curl -X POST http://localhost:5000/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Buy groceries","description":"Milk, eggs","completed":false}'
-```
-
-**Get all tasks:**
-```bash
-curl http://localhost:5000/api/tasks
-```
-
-**Search tasks:**
-```bash
-curl http://localhost:5000/api/tasks/search?q=groceries
-```
 
 ## 🧪 Testing
 
@@ -155,21 +142,42 @@ DB_PASSWORD: MongoDB password (optional)
 ## 🔗 Related Repositories
 
 - [Infrastructure](https://github.com/t0556708557/terraform-eks) - Terraform infrastructure code
-- [Helm Charts](https://github.com/t0556708557/task-manager-k8s-helm) - Kubernetes deployment charts
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-**Happy task managing! 🎯**
+- [Helm Charts](https://github.com/t0556708557/task-manager-helm-charts) - Kubernetes deployment charts
 
 ## 📦 Tech Stack
 
-- Flask 3.0 (Python web framework)
+- Flask 3.0.0 (Python web framework)
 - MongoDB 7.0 (Database)
+- PyMongo 4.6.1 (MongoDB driver)
 - Pytest (Testing framework)
 - Docker & Docker Compose
+- Python 3.11 (Runtime)
+
+## 📁 Project Structure
+
+```
+task-manager/
+├── app/
+│   ├── __init__.py          # Flask app factory
+│   ├── config.py            # Configuration
+│   ├── models.py            # Database models
+│   ├── routes.py            # API endpoints
+│   └── static/
+│       └── index.html       # Frontend UI
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py          # Test configuration
+│   └── test_api.py          # API tests
+├── .env                     # Environment variables (optional)
+├── docker-compose.yml       # Docker compose config
+├── Dockerfile               # Docker image config
+├── Dockerfile.test          # Test container
+├── requirements.txt         # Python dependencies
+├── requirements-test.txt    # Test dependencies
+├── run.py                   # Application entry point
+├── ci-cd.yaml              # CI/CD pipeline
+├── task-manager-full-architecture.png  # Architecture diagram
+└── README.md               # This file
+```
+
+**Happy task managing! 🎯**
