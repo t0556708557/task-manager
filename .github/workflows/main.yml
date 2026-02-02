@@ -172,18 +172,9 @@ jobs:
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name tamar-cluster --region ap-south-1
 
-      # - name: Deploy latest image to EKS
-      #   run: |
-      #     kubectl set image deployment/task-manager \
-      #       task-manager-app=${{ secrets.ECR_REPOSITORY }}:latest \
-      #       -n task-manager
-      #     kubectl rollout status deployment/task-manager -n task-manager
-
-      - name: Deploy latest image to EKS with Helm
+      - name: Deploy latest image to EKS
         run: |
-          helm upgrade --install task-manager ./task-manager \
-            --namespace task-manager \
-            --create-namespace \
-            --set app.image=${{ secrets.ECR_REPOSITORY }}:latest \
-            --wait
-      
+          kubectl set image deployment/task-manager \
+            task-manager-app=${{ secrets.ECR_REPOSITORY }}:latest \
+            -n task-manager
+          kubectl rollout status deployment/task-manager -n task-manager
