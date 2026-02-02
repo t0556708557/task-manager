@@ -94,16 +94,32 @@ def test_delete_task(client, sample_task, mocker):
     assert data['success'] == True
     mock_delete.assert_called_once_with(sample_task['id'])
 
-def test_search_tasks(client, sample_task):
+def test_search_tasks(client, sample_task, mocker):
     """Test searching tasks"""
+    mock_search = mocker.patch('app.models.Task.search', return_value=[sample_task])
+    
     response = client.get('/api/tasks/search?q=Sample')
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data['success'] == True
     assert len(data['data']) > 0
+    mock_search.assert_called_once_with('Sample')
 
-def test_delete_completed_tasks(client):
+def test_delete_completed_tasks(client, mocker):
     """Test deleting completed tasks"""
+    # Mock the create task call
+    mock_create = mocker.patch('app.models.Task.create', return_value={
+        'id': '507f1f77bcf86cd799439012',
+        'title': 'Completed Task',
+        'description': '',
+        'completed': True,
+        'created_at': '2023-01-01T00:00:00Z',
+        'updated_at': '2023-01-01T00:00:00Z'
+    })
+    
+    # Mock the delete completed call
+    mock_delete_completed = mocker.patch('app.models.Task.delete_completed', return_value=1)
+    
     # Create completed task
     client.post('/api/tasks',
         data=json.dumps({'title': 'Completed Task', 'completed': True}),
@@ -113,16 +129,22 @@ def test_delete_completed_tasks(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data['success'] == True
+    assert data['count'] == 1
+    mock_delete_completed.assert_called_once()
 
-def test_create_task_without_title(client):
+def test_create_task_without_title(client, mocker):
     """Test creating task without title"""
+    # No need to mock anything since validation happens before model call
     response = client.post('/api/tasks',
         data=json.dumps({'description': 'No title'}),
         content_type='application/json')
     
     assert response.status_code == 400
 
-def test_get_nonexistent_task(client):
+def test_get_nonexistent_task(client, mocker):
     """Test getting non-existent task"""
+    mock_get_by_id = mocker.patch('app.models.Task.get_by_id', return_value=None)
+    
     response = client.get('/api/tasks/507f1f77bcf86cd799439011')
     assert response.status_code == 404
+    mock_get_by_id.assert_called_once_with('507f1f77bcf86cd799439011')
