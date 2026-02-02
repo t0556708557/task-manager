@@ -33,7 +33,7 @@ A RESTful API for managing tasks built with Flask and MongoDB. This application 
 
 ## 🔧 Prerequisites
 
-### For Docker Setup (Recommended)
+### For Docker Setup
 - Docker and Docker Compose
 
 ### For Local Development
@@ -45,7 +45,7 @@ A RESTful API for managing tasks built with Flask and MongoDB. This application 
 
 ## 🚀 Installation & Setup
 
-### Option 1: Docker Setup (Recommended)
+### Option 1: Docker Setup
 
 #### Step 1: Clone the Repository
 ```bash
@@ -159,11 +159,6 @@ docker compose --profile test run --rm test
 docker compose --profile test run --rm test pytest tests/ -v --cov=app
 ```
 
-### Test Types
-
-- **Unit Tests**: Isolated tests with mocked database
-- **E2E Tests**: Full application tests with real database
-
 ---
 
 ## 🚢 CI/CD Pipeline
@@ -190,8 +185,8 @@ The project includes an automated pipeline that performs:
 AWS_ROLE: ARN of IAM role for AWS access
 AWS_REGION: AWS region (e.g., us-east-1)
 ECR_REPOSITORY: ECR repository URL
-DB_USER: MongoDB username (optional)
-DB_PASSWORD: MongoDB password (optional)
+DB_USER: MongoDB username
+DB_PASSWORD: MongoDB password
 ```
 
 ---
@@ -224,4 +219,3 @@ DB_PASSWORD: MongoDB password (optional)
 
 ---
 
-**Happy task managing! 🎯**
