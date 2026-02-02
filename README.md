@@ -1,301 +1,107 @@
-# Task Manager API
+# Task Manager REST API
 
 A RESTful API for managing tasks built with Flask and MongoDB. This application provides a complete task management system with CRUD operations, search functionality, and Docker containerization.
 
+## 📁 Project Structure
+
+```
+task-manager/
+├── app/
+│   ├── __init__.py          # Flask app factory
+│   ├── config.py            # Configuration
+│   ├── models.py            # Database models
+│   ├── routes.py            # API endpoints
+│   └── static/
+│       └── index.html       # Frontend UI
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py          # Test configuration
+│   └── test_api.py          # API tests
+├── docker-compose.yml       # Docker compose config
+├── Dockerfile               # Docker image config
+├── requirements.txt         # Python dependencies
+└── run.py                   # Application entry point
+```
+
 ## 🚀 Features
 
-- ✅ Create, read, update, and delete tasks
-- 🔍 Search tasks by title or description
-- 📊 Track task completion status
-- 🐳 Docker containerization
-- 🧪 Unit and integration testing
-- 🚢 CI/CD pipeline with AWS ECR and EKS deployment
-- 📝 RESTful API with JSON responses
+- ✅ Create, read, update, delete tasks
+- 🔍 Search tasks by title/description
+- ✏️ Edit task details
+- ☑️ Mark tasks as completed
+- 🗑️ Delete individual or all completed tasks
+- 🎨 Beautiful, responsive UI
+- 🐳 Fully dockerized
+- 🧪 Comprehensive unit tests
 
-## 📋 Prerequisites
+## 📋 API Endpoints
 
-- Python 3.11+
-- Docker and Docker Compose
-- MongoDB (for local development)
-- Git
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/tasks | Get all tasks |
+| GET | /api/tasks/{id} | Get task by ID |
+| POST | /api/tasks | Create new task |
+| PUT | /api/tasks/{id} | Update task |
+| DELETE | /api/tasks/{id} | Delete task |
+| DELETE | /api/tasks/completed | Delete all completed |
+| GET | /api/tasks/search?q={query} | Search tasks |
 
-## 🛠️ Installation
+## 🐳 Quick Start
 
-### Local Development
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/t0556708557/task-manager
-   cd task-manager
-   ```
-
-2. **Create virtual environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up environment variables:**
-   ```bash
-   # Create .env file
-   MONGO_URI=mongodb://localhost:27017/taskdb
-   FLASK_ENV=development
-   ```
-
-5. **Start MongoDB:**
-   ```bash
-   # Using Docker
-   docker run -d -p 27017:27017 --name mongodb mongo:7.0
-   ```
-
-6. **Run the application:**
-   ```bash
-   python run.py
-   ```
-
-The API will be available at `http://localhost:5000`
-
-## 🐳 Docker Setup
-
-### Build and Run with Docker Compose
-
-1. **Build and start all services:**
-   ```bash
-   docker compose up --build
-   ```
-
-2. **Run in background:**
-   ```bash
-   docker compose up -d --build
-   ```
-
-3. **View logs:**
-   ```bash
-   docker compose logs -f web
-   ```
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MONGO_URI` | `mongodb://mongodb:27017/taskdb` | MongoDB connection string |
-| `FLASK_ENV` | `production` | Flask environment (development/production) |
-| `DB_USER` | - | MongoDB username (optional) |
-| `DB_PASSWORD` | - | MongoDB password (optional) |
-
-### Docker Commands
-
+**Start with Docker:**
 ```bash
-# Build specific service
-docker compose build web
-
-# Run tests
-docker compose --profile test up --build
-
-# Stop all services
-docker compose down
-
-# Remove volumes
-docker compose down -v
+docker-compose up --build
 ```
 
-## 📚 API Documentation
+**Access:**
+- Frontend: http://localhost:5000
+- API: http://localhost:5000/api/tasks
 
-### Base URL
-```
-http://localhost:5000/api
-```
-
-### Response Format
-All responses follow this structure:
-```json
-{
-  "success": boolean,
-  "data": object|array,
-  "message": string,
-  "error": string,
-  "count": number
-}
+**Run tests:**
+```bash
+docker-compose run web pytest tests/ -v
 ```
 
-### Endpoints
+## 💻 Local Development
 
-#### 1. Get All Tasks
-**GET** `/api/tasks`
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "507f1f77bcf86cd799439011",
-      "title": "Sample Task",
-      "description": "Task description",
-      "completed": false,
-      "created_at": "2023-01-01T00:00:00Z",
-      "updated_at": "2023-01-01T00:00:00Z"
-    }
-  ],
-  "count": 1
-}
+1. Create virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate
 ```
 
-#### 2. Get Task by ID
-**GET** `/api/tasks/{task_id}`
-
-**Response (Success):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": "507f1f77bcf86cd799439011",
-    "title": "Sample Task",
-    "description": "Task description",
-    "completed": false,
-    "created_at": "2023-01-01T00:00:00Z",
-    "updated_at": "2023-01-01T00:00:00Z"
-  }
-}
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
 ```
 
-**Response (Not Found):**
-```json
-{
-  "success": false,
-  "error": "Task not found"
-}
+3. Start MongoDB:
+```bash
+mongod --dbpath /path/to/data
 ```
 
-#### 3. Create Task
-**POST** `/api/tasks`
-
-**Request Body:**
-```json
-{
-  "title": "New Task",
-  "description": "Task description",
-  "completed": false
-}
+4. Run application:
+```bash
+python run.py
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": "507f1f77bcf86cd799439011",
-    "title": "New Task",
-    "description": "Task description",
-    "completed": false,
-    "created_at": "2023-01-01T00:00:00Z",
-    "updated_at": "2023-01-01T00:00:00Z"
-  },
-  "message": "Task created"
-}
+## 📝 API Examples
+
+**Create task:**
+```bash
+curl -X POST http://localhost:5000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Buy groceries","description":"Milk, eggs","completed":false}'
 ```
 
-#### 4. Update Task
-**PUT** `/api/tasks/{task_id}`
-
-**Request Body:**
-```json
-{
-  "title": "Updated Task",
-  "completed": true
-}
+**Get all tasks:**
+```bash
+curl http://localhost:5000/api/tasks
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": "507f1f77bcf86cd799439011",
-    "title": "Updated Task",
-    "description": "Task description",
-    "completed": true,
-    "created_at": "2023-01-01T00:00:00Z",
-    "updated_at": "2023-01-01T00:00:00Z"
-  },
-  "message": "Task updated"
-}
-```
-
-#### 5. Delete Task
-**DELETE** `/api/tasks/{task_id}`
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Task deleted"
-}
-```
-
-#### 6. Delete Completed Tasks
-**DELETE** `/api/tasks/completed`
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Deleted 3 tasks",
-  "count": 3
-}
-```
-
-#### 7. Search Tasks
-**GET** `/api/tasks/search?q={query}`
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "507f1f77bcf86cd799439011",
-      "title": "Sample Task",
-      "description": "Task description",
-      "completed": false,
-      "created_at": "2023-01-01T00:00:00Z",
-      "updated_at": "2023-01-01T00:00:00Z"
-    }
-  ],
-  "count": 1,
-  "query": "Sample"
-}
-```
-
-### Error Responses
-
-**400 Bad Request:**
-```json
-{
-  "success": false,
-  "error": "Title required"
-}
-```
-
-**404 Not Found:**
-```json
-{
-  "success": false,
-  "error": "Task not found"
-}
-```
-
-**500 Internal Server Error:**
-```json
-{
-  "success": false,
-  "error": "Failed to retrieve tasks"
-}
+**Search tasks:**
+```bash
+curl http://localhost:5000/api/tasks/search?q=groceries
 ```
 
 ## 🧪 Testing
@@ -346,30 +152,6 @@ DB_USER: MongoDB username (optional)
 DB_PASSWORD: MongoDB password (optional)
 ```
 
-## 📁 Project Structure
-
-```
-task-manager/
-├── app/
-│   ├── __init__.py          # Flask app factory
-│   ├── config.py            # Configuration classes
-│   ├── models.py            # Database models
-│   └── routes.py            # API endpoints
-├── tests/
-│   ├── conftest.py          # Test configuration
-│   └── test_api.py          # API tests
-├── static/
-│   └── index.html           # Frontend (optional)
-├── Dockerfile               # Production container
-├── Dockerfile.test          # Test container
-├── docker-compose.yml       # Local development
-├── requirements.txt         # Python dependencies
-├── requirements-test.txt    # Test dependencies
-├── run.py                   # Application entry point
-├── ci-cd.yaml              # GitHub Actions pipeline
-└── README.md               # This file
-```
-
 ## 🔗 Related Repositories
 
 - [Infrastructure](https://github.com/t0556708557/terraform-eks) - Terraform infrastructure code
@@ -384,3 +166,10 @@ task-manager/
 5. Open a Pull Request
 
 **Happy task managing! 🎯**
+
+## 📦 Tech Stack
+
+- Flask 3.0 (Python web framework)
+- MongoDB 7.0 (Database)
+- Pytest (Testing framework)
+- Docker & Docker Compose
