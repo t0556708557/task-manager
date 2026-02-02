@@ -4,7 +4,7 @@ A RESTful API for managing tasks built with Flask and MongoDB. This application 
 
 ## 📋 Table of Contents
 
-1. [Overview](## 🎯 Overview)
+1. [Overview](#Overview)
 2. [Prerequisites](#prerequisites)
 3. [Installation & Setup](#installation--setup)
 4. [Project Structure](#project-structure)
@@ -218,5 +218,6 @@ DB_PASSWORD: MongoDB password
 - [Helm Charts Repository](https://github.com/t0556708557/task-manager-helm-charts) - Kubernetes deployment charts
 
 ---
+
 
 
