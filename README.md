@@ -20,14 +20,14 @@ A RESTful API for managing tasks built with Flask and MongoDB. This application 
 
 ### Key Features
 
-- ✅ יצירה, קריאה, עדכון ומחיקה של משימות (CRUD)
-- 🔍 חיפוש משימות לפי כותרת/תיאור
-- ✏️ עריכת פרטי משימות
-- ☑️ סימון משימות כהושלמו
-- 🗑️ מחיקת משימות בודדות או כל המשימות שהושלמו
-- 🎨 ממשק משתמש יפה ורספונסיבי
-- 🐳 Docker containerization מלא
-- 🧪 בדיקות unit מקיפות
+- ✅ Create, read, update, delete tasks (CRUD)
+- 🔍 Search tasks by title/description
+- ✏️ Edit task details
+- ☑️ Mark tasks as completed
+- 🗑️ Delete individual or all completed tasks
+- 🎨 Beautiful, responsive UI
+- 🐳 Fully dockerized
+- 🧪 Comprehensive unit tests
 
 ---
 
@@ -39,7 +39,7 @@ A RESTful API for managing tasks built with Flask and MongoDB. This application 
 ### For Local Development
 - Python 3.11+
 - MongoDB 7.0
-- Docker (אופציונלי, למסד נתונים)
+- Docker (optional, for database)
 
 ---
 
@@ -172,10 +172,10 @@ docker compose --profile test run --rm test pytest tests/ -v --cov=app
 
 The project includes an automated pipeline that performs:
 
-1. **Build & Unit Test**: בניית Docker images והרצת בדיקות unit
-2. **Package & Integration Tests**: יצירת production image והרצת בדיקות E2E
-3. **Publish**: העלאת ה-image המאומת ל-Amazon ECR
-4. **Deploy**: פריסה ל-Amazon EKS
+1. **Build & Unit Test**: Build Docker images and run unit tests
+2. **Package & Integration Tests**: Create production image and run E2E tests
+3. **Publish**: Push verified image to Amazon ECR
+4. **Deploy**: Deploy to Amazon EKS
 
 ### Pipeline Stages
 
