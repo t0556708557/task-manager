@@ -52,9 +52,15 @@ jobs:
 
       - name: Build application + database - mongo
         run: docker compose build
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         
       - name: Start E2E environment
         run: docker compose up -d
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Run E2E tests
         run: |
@@ -79,6 +85,9 @@ jobs:
       - name: Stop E2E environment
         if: always()
         run: docker compose down -v
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
   publish:
     name: Publish Verified Image to ECR
