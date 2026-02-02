@@ -2,24 +2,21 @@
 import pytest
 from app import create_app
 from app.config import TestingConfig
-from app.models import Database
-import json
+
+"""Pytest configuration"""
+import pytest
+from app import create_app
+from app.config import TestingConfig
 
 @pytest.fixture
-def app():
+def app(mocker):
     """Create application for testing"""
+    # Mock database initialization
+    mocker.patch('app.models.Database.initialize')
+    
     app = create_app(TestingConfig)
     
-    with app.app_context():
-        Database.initialize()
-        # Clear test database
-        Database.db.tasks.delete_many({})
-    
     yield app
-    
-    # Cleanup
-    with app.app_context():
-        Database.db.tasks.delete_many({})
 
 @pytest.fixture
 def client(app):
@@ -27,14 +24,13 @@ def client(app):
     return app.test_client()
 
 @pytest.fixture
-def sample_task(client):
+def sample_task():
     """Create a sample task for testing"""
-    response = client.post('/api/tasks',
-        data=json.dumps({
-            'title': 'Sample Task',
-            'description': 'Sample Description',
-            'completed': False
-        }),
-        content_type='application/json')
-    
-    return json.loads(response.data)['data']
+    return {
+        'id': '507f1f77bcf86cd799439011',
+        'title': 'Sample Task',
+        'description': 'Sample Description',
+        'completed': False,
+        'created_at': '2023-01-01T00:00:00Z',
+        'updated_at': '2023-01-01T00:00:00Z'
+    }
