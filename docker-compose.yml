@@ -34,7 +34,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Test service - runs independently
+  # Test service - runs independently (no database dependency for unit tests)
   test:
     build:
       context: .
@@ -43,8 +43,6 @@ services:
     environment:
       - MONGO_URI=mongodb://mongodb:27017/taskdb-test
       - FLASK_ENV=testing
-    depends_on:
-      - mongodb
     networks:
       - app_network
     volumes:
@@ -60,6 +58,7 @@ networks:
 
 volumes:
   db-data:
+
 
 
 
