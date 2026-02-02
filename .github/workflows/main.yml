@@ -21,30 +21,8 @@ jobs:
       - name: Build images
         run: docker compose --profile test build
 
-      - name: Start MongoDB
-        run: docker compose up -d mongodb
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-
-      - name: Wait for MongoDB
-        run: |
-          until docker inspect --format='{{.State.Health.Status}}' mongo-db | grep healthy; do
-            echo "Waiting for MongoDB..."
-            sleep 3
-          done
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-
       - name: Run unit tests
         run: docker compose run --rm test
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
 
       - name: Docker cleanup
         if: always()
