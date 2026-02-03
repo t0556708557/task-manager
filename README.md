@@ -119,15 +119,12 @@ task-manager/
 │   ├── __init__.py
 │   ├── conftest.py          # Test configuration
 │   └── test_api.py          # API tests
-├── .env                     # Environment variables (optional)
 ├── docker-compose.yml       # Docker compose config
 ├── Dockerfile               # Docker image config
 ├── Dockerfile.test          # Test container
 ├── requirements.txt         # Python dependencies
 ├── requirements-test.txt    # Test dependencies
 ├── run.py                   # Application entry point
-├── ci-cd.yaml              # CI/CD pipeline
-├── task-manager-full-architecture.png  # Architecture diagram
 └── README.md               # This file
 ```
 
@@ -218,6 +215,7 @@ DB_PASSWORD: MongoDB password
 - [Helm Charts Repository](https://github.com/t0556708557/task-manager-helm-charts) - Kubernetes deployment charts
 
 ---
+
 
 
 
