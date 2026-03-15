@@ -215,7 +215,4 @@ DB_PASSWORD: MongoDB password
 - [Helm Charts Repository](https://github.com/t0556708557/task-manager-helm-charts) - Kubernetes deployment charts
 
 ---
-
-
-
-
+---
